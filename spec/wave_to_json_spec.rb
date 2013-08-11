@@ -10,7 +10,7 @@ describe WaveToJson do
     let(:output) { File.read(output_path) }
     let(:options) { { output_path: output_path } }
 
-    subject { WaveToJson.new(mp3_path).generate(options) }
+    subject { WaveToJson.new(mp3_path, options).generate }
 
     after { FileUtils.rm(output_path) }
 

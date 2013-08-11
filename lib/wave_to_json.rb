@@ -2,12 +2,22 @@ require 'rubygems'
 require 'oj'
 
 class WaveToJson
+  OPTION_FOR_LEFT = %w(remix 1 1)
+  OPTION_FOR_RIGHT = %w(remix 2 2)
   PIXEL_PER_SECOND = 1000 / 30.0
   SIZE_OF_SEGMENT = 16
 
-  def initialize(file)
+  def initialize(file, options = {})
     @file = file
-    @target = file.gsub('.mp3', '.raw')
+    @command_for_rawfile = [ 'sox', file, '-t', 'raw', '-r', '44100', '-c', '1', '-b', '16', '-e', 'signed-integer', '-L', '-' ]
+    @output_path = options[:output_path]
+    if options[:side]
+      if options[:side] == :right
+        @command_for_rawfile.concat OPTION_FOR_RIGHT
+      elsif options[:side] == :left
+        @command_for_rawfile.concat OPTION_FOR_LEFT
+      end
+    end
   end
 
   def fill_buckets
@@ -30,7 +40,7 @@ class WaveToJson
 
   def generate_raw_file
     raw_value=nil
-    sox_command = [ 'sox', @file, '-t', 'raw', '-r', '44100', '-c', '2', '-b', '16', '-e', 'signed-integer', '-L', '-' ]
+    sox_command = @command_for_rawfile
     IO.popen('-') do |p|
       if p.nil?
         $stderr.close
@@ -76,8 +86,8 @@ class WaveToJson
     end
   end
 
-  def generate(options = {})
+  def generate
     buckets = fill_buckets
-    File.open(options[:output_path], 'w') { |file| file.write(Oj.dump(calculate_ratios(*buckets))) }
+    File.open(@output_path, 'w') { |file| file.write(Oj.dump(calculate_ratios(*buckets))) }
   end
 end
