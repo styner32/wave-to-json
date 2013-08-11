@@ -81,9 +81,11 @@ class WaveToJson
       height
     end
 
-    results.map do |result|
-      (result / max.to_f).round(6)
-    end
+    #results.map do |result|
+    #  (result / max.to_f).round(6)
+    #end
+
+    results
   end
 
   def generate
