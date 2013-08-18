@@ -1,76 +1,38 @@
 require 'rubygems'
 require 'oj'
+require 'run_command'
+require 'audio'
 
 class WaveToJson
-  OPTION_FOR_LEFT = %w(remix 1 1)
-  OPTION_FOR_RIGHT = %w(remix 2 2)
   PIXEL_PER_SECOND = 1000 / 30.0
   SIZE_OF_SEGMENT = 16
 
-  def initialize(file, options = {})
-    @file = file
-    @command_for_rawfile = [ 'sox', file, '-t', 'raw', '-r', '44100', '-c', '1', '-b', '16', '-e', 'signed-integer', '-L', '-' ]
+  def initialize(filename, options = {})
+    @filename = filename
     @output_path = options[:output_path]
-    if options[:side]
-      if options[:side] == :right
-        @command_for_rawfile.concat OPTION_FOR_RIGHT
-      elsif options[:side] == :left
-        @command_for_rawfile.concat OPTION_FOR_LEFT
-      end
-    end
+    @audio = Audio.new(filename)
   end
 
-  def fill_buckets
-    mins = []
-    maxs = []
+  def raw_values
+    min_values = []
+    max_values = []
 
-    content = generate_raw_file
-    contents = content.unpack('l*')
+    contents = @audio.raw_data
     bucket_size = (contents.length.to_f / width)
     contents.each_with_index do |value, i|
       index = (i / bucket_size).to_i
       next if index >= (width - 1)
 
-      mins[index] = value if mins[index].nil? || value < mins[index]
-      maxs[index] = value if maxs[index].nil? || value > maxs[index]
+      min_values[index] = value if min_values[index].nil? || value < min_values[index]
+      max_values[index] = value if max_values[index].nil? || value > max_values[index]
     end
 
-    [mins, maxs]
-  end
-
-  def generate_raw_file
-    raw_value=nil
-    sox_command = @command_for_rawfile
-    IO.popen('-') do |p|
-      if p.nil?
-        $stderr.close
-        exec *sox_command
-      end
-      raw_value = p.read
-    end
-    if raw_value.size == 0
-      raise Exception.new("sox returned no data, command was\n> #{sox_command.join(' ')}")
-    end
-
-    raw_value
-  end
-
-  def sox_get_length
-    sox_command = ['soxi', '-D', @file]
-    length = nil
-    IO.popen('-') do |p|
-      if p.nil?
-        $stderr.close
-        exec *sox_command
-      end
-      length = p.read
-    end
-
-    length.to_f * 1000
+    [min_values, max_values]
   end
 
   def width
-    @width ||= (sox_get_length / PIXEL_PER_SECOND).round
+    duration_in_millisecond = @audio.duration * 1000
+    @width ||= ( duration_in_millisecond/ PIXEL_PER_SECOND).round
   end
 
   def calculate_ratios(mins, maxs)
@@ -81,15 +43,14 @@ class WaveToJson
       height
     end
 
-    #results.map do |result|
-    #  (result / max.to_f).round(6)
-    #end
-
-    results
+    results.map { |result| (result / max.to_f).round(6) }
   end
 
   def generate
-    buckets = fill_buckets
-    File.open(@output_path, 'w') { |file| file.write(Oj.dump(calculate_ratios(*buckets))) }
+    File.open(@output_path, 'w') do |file|
+      values = raw_values
+      converted_values = calculate_ratios(*values)
+      file.write(Oj.dump(converted_values))
+    end
   end
 end
