@@ -23,4 +23,15 @@ class Audio
 
     RunCommand.new(command).run_and_return_output_if_success.unpack('l*')
   end
+
+  def generate_raw_file(raw_file_path, options={})
+    command = [ 'sox', @path, '-t', 'raw', '-r', '44100', '-c', '1', '-e', 'signed-integer', '-L', raw_file_path ]
+    if options[:channel] == :left
+      command.concat(%w(remix 1 1))
+    elsif options[:channel] == :right
+      command.concat(%w(remix 2 2))
+    end
+
+    RunCommand.new(command).execute
+  end
 end
