@@ -1,4 +1,7 @@
 class Audio
+  MAX_VALUE = 2**16
+  MIN_VALUE = -(2**16)
+
   def initialize(audio_path)
     @path = audio_path
   end

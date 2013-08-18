@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'oj'
-require 'run_command'
-require 'audio'
+require_relative './run_command'
+require_relative './audio'
 
 class WaveToJson
   PIXEL_PER_SECOND = 1000 / 30.0
@@ -17,14 +17,34 @@ class WaveToJson
     min_values = []
     max_values = []
 
-    contents = @audio.raw_data
-    bucket_size = (contents.length.to_f / width)
-    contents.each_with_index do |value, i|
-      index = (i / bucket_size).to_i
-      next if index >= (width - 1)
+    #raw_file_path = @filename.gsub(/\.mp3$/, '.raw')
+    #@audio.generate_raw_file(raw_file_path)
+    #contents = File.binread(raw_file_path).unpack('l*')
 
-      min_values[index] = value if min_values[index].nil? || value < min_values[index]
-      max_values[index] = value if max_values[index].nil? || value > max_values[index]
+    contents = @audio.raw_data
+    segment_size = (contents.length.to_f / width).to_i
+    current_index = 0
+    min = Audio::MAX_VALUE
+    max = Audio::MIN_VALUE
+
+    contents.each do |value|
+      if current_index == segment_size
+        max_values.push(max)
+        min_values.push(min)
+
+        current_index = 0
+        min = Audio::MAX_VALUE
+        max = Audio::MIN_VALUE
+      else
+        min = value < min ? value : min
+        max = value > max ? value : max
+        current_index+=1
+      end
+    end
+
+    if current_index != 0
+      max_values.push(max)
+      min_values.push(min)
     end
 
     [min_values, max_values]
