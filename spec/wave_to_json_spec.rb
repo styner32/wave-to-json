@@ -8,9 +8,9 @@ describe WaveToJson do
     let(:expected_output) { File.read(File.join(File.dirname(__FILE__), 'fixtures', 'test.json')) }
     let(:output_path) { File.join(File.dirname(__FILE__), 'test_result', 'test.json') }
     let(:output) { File.read(output_path) }
-    let(:options) { { output_path: output_path } }
+    let(:options) { { } }
 
-    subject { WaveToJson.new(mp3_path, options).generate }
+    subject { WaveToJson.new(mp3_path, output_path, options).generate }
 
     after { FileUtils.rm(output_path) }
 

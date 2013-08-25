@@ -1,16 +1,16 @@
-require 'rubygems'
 require 'oj'
-require_relative './run_command'
-require_relative './audio'
+require 'wave_to_json/version'
+require 'shell_command'
+require 'audio'
 
 class WaveToJson
   PIXEL_PER_SECOND = 1000 / 30.0
   SIZE_OF_SEGMENT = 16
 
-  def initialize(filename, options = {})
-    @filename = filename
-    @output_path = options[:output_path]
-    @audio = Audio.new(filename)
+  def initialize(source, destination, options = {})
+    @filename = source
+    @output_path = destination
+    @audio = Audio.new(@filename)
   end
 
   def raw_values

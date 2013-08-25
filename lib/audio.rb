@@ -8,12 +8,12 @@ class Audio
 
   def duration
     return @duration if @duration
-    @duration = RunCommand.new(['soxi', '-D', @path]).run_and_return_output_if_success.to_f
+    @duration = ShellCommand.new(['soxi', '-D', @path]).run_and_return_output_if_success.to_f
   end
 
   def number_of_channels
     return @number_of_channels if @number_of_channels
-    @number_of_channels = RunCommand.new(['soxi', '-c', @path]).run_and_return_output_if_success.to_i
+    @number_of_channels = ShellCommand.new(['soxi', '-c', @path]).run_and_return_output_if_success.to_i
   end
 
   def raw_data(options = {})
@@ -24,7 +24,7 @@ class Audio
       command.concat(%w(remix 2 2))
     end
 
-    RunCommand.new(command).run_and_return_output_if_success.unpack('l*')
+    ShellCommand.new(command).run_and_return_output_if_success.unpack('l*')
   end
 
   def generate_raw_file(raw_file_path, options={})
@@ -35,6 +35,6 @@ class Audio
       command.concat(%w(remix 2 2))
     end
 
-    RunCommand.new(command).execute
+    ShellCommand.new(command).execute
   end
 end

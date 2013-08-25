@@ -1,4 +1,4 @@
-class RunCommand
+class ShellCommand
   attr_accessor :output
 
   def initialize(commands)
