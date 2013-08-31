@@ -4,12 +4,12 @@ require 'shell_command'
 require 'audio'
 
 class WaveToJson
-  PIXEL_PER_SECOND = 1000 / 30.0
-  SIZE_OF_SEGMENT = 16
+  DEFAULT_PIXEL_PER_SECOND = 1000 / 30.0
 
   def initialize(source, destination, options = {})
     @filename = source
     @output_path = destination
+    @pixel_per_second = options.fetch(:pixel_per_second, DEFAULT_PIXEL_PER_SECOND)
     @audio = Audio.new(@filename)
   end
 
@@ -52,7 +52,7 @@ class WaveToJson
 
   def width
     duration_in_millisecond = @audio.duration * 1000
-    @width ||= ( duration_in_millisecond/ PIXEL_PER_SECOND).round
+    @width ||= ( duration_in_millisecond/ @pixel_per_second).round
   end
 
   def calculate_ratios(mins, maxs)
