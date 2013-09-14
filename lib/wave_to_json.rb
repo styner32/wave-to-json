@@ -17,10 +17,6 @@ class WaveToJson
     min_values = []
     max_values = []
 
-    #raw_file_path = @filename.gsub(/\.mp3$/, '.raw')
-    #@audio.generate_raw_file(raw_file_path)
-    #contents = File.binread(raw_file_path).unpack('l*')
-
     contents = @audio.raw_data
     segment_size = (contents.length.to_f / width).to_i
     current_index = 0
