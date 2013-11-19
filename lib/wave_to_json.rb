@@ -10,6 +10,7 @@ class WaveToJson
     @filename = source
     @output_path = destination
     @pixel_per_second = options.fetch(:pixel_per_second, DEFAULT_PIXEL_PER_SECOND)
+    @channel = options.fetch(:channel, :both)
     @audio = Audio.new(@filename)
   end
 
@@ -17,7 +18,7 @@ class WaveToJson
     min_values = []
     max_values = []
 
-    contents = @audio.raw_data
+    contents = @audio.raw_data(channel: @channel)
     segment_size = (contents.length.to_f / width).to_i
     current_index = 0
     min = Audio::MAX_VALUE
