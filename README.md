@@ -1,4 +1,1 @@
-waveform-json
-=============
-
-generate a waveform in json format
+# Moved to [viki-org/wave-to-json](https://github.com/viki-org/wave-to-json)
