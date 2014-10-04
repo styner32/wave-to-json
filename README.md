@@ -1,6 +1,7 @@
 wave-to-json
 =============
 generate a waveform in json format
+[![Build Status](https://travis-ci.org/styner32/wave-to-json.svg?branch=master)](https://travis-ci.org/styner32/wave-to-json)
 
 Installation
 ============
