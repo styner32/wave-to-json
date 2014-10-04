@@ -1,7 +1,7 @@
 require 'oj'
 require 'wave_to_json/version'
-require 'shell_command'
-require 'audio'
+require 'wave_to_json/shell_command'
+require 'wave_to_json/audio'
 
 class WaveToJson
   DEFAULT_PIXEL_PER_SECOND = 1000 / 30.0
