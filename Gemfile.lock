@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    wave_to_json (0.0.1)
+    wave_to_json (0.1.0)
       oj (~> 2.0)
       thor (~> 0.19)
 
