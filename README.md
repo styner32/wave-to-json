@@ -43,3 +43,10 @@ Generate json format from right channel
 ```ruby
 WaveToJson.new('test.mp3', 'test.json', channel: :right).generate
 ```
+
+CLI Usage
+-----------------
+```sh
+  $ wave_to_json generate song.mp3 waveform.json
+```
+
