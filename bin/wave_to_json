@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require 'wave_to_json/cli'
+
+WaveToJson::CLI.start(ARGV)

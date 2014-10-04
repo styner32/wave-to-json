@@ -13,12 +13,14 @@ Gem::Specification.new do |s|
   s.license       = 'MIT'
 
   s.files         = `git ls-files`.split("\n")
+  s.executables   = s.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
 
   s.require_paths = ["lib"]
   s.required_ruby_version = '>= 2.0.0'
 
   s.add_runtime_dependency     "oj", "~> 2.0"
+  s.add_runtime_dependency     "thor", "~> 0.19"
 
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec"
