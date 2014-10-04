@@ -43,4 +43,3 @@ Generate json format from right channel
 ```ruby
 WaveToJson.new('test.mp3', 'test.json', channel: :right).generate
 ```
->>>>>>> b0f690120d56e3b432ece99a2b6a53a7d82ff267
